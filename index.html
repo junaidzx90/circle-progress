@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="widget" style="width:400px">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <linearGradient id="gradient" x1="120%" y1="0%" x2="0%" y2="120%">
+                <stop class="stop1" offset="30%" stop-color="red"/>
+                <stop class="stop1" offset="95%" stop-color="blue"/>
+            </linearGradient>
+            <path d="M20,60a35,35 0 1,1 60,0" stroke="#D3D7DB" stroke-width="4" fill="none" stroke-linecap="round"></path>
+            
+            <path id="range-progress" class="range-progress" d="M20,60a35,35 0 1,1 60,0" stroke="url(#gradient)" stroke-width="6" pathLength="100" fill="none" stroke-linecap="round" stroke-dasharray="0 101"></path>
+            <circle class="dot" cx="0" cy="0" r="2" fill="#fff" />
+        </svg>
+        <input type="range" class="meter" min="0" max="100" value="0" step="1" />
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script>
+        $(".widget").each(function(){
+            let progress = $(this).find(".range-progress");
+            let meter = $(this).find(".meter");
+            let dot = $(this).find(".dot");
+
+            let trackLength = progress[0].getTotalLength();
+            let val = (meter.val() * trackLength) / 100;
+            let poz = document.getElementById("range-progress").getPointAtLength(val);
+            progress.attr('stroke-dasharray', `${meter.val()} 101`);
+            dot[0].setAttributeNS(null, 'transform', `translate(${poz.x},${poz.y})`)
+
+            $(document).on("input", function(){
+                let trackLength = progress[0].getTotalLength();
+                let val = (meter.val() * trackLength) / 100;
+                let poz = progress[0].getPointAtLength(val);
+                progress.attr('stroke-dasharray', `${meter.val()} 101`);
+                dot[0].setAttributeNS(null, 'transform', `translate(${poz.x},${poz.y})`)
+            })
+        })
+        
+    </script>
+</body>
+</html>
